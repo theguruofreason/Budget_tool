@@ -123,27 +123,6 @@ class BudgetTool(object):
     def transaction_captured(self, transaction):
         return transaction in self.all_transactions
 
-    def parse_csv_file(self, file):
-        try:
-            with open(file, 'r', newline='') as f:
-                csv_reader = csv.reader(f)
-        except Exception as e:
-            print("failed to read file: {}".format(file))
-            print("error: {}".format(e))
-            print("continuing...")
-        for row in csv_reader:
-            # remove blank columns
-            row = filter(None, row)
-            try:
-                transaction = Transaction(row, self.sensitivity)
-            except Exception as e:
-                print(e)
-                print("Failed to parse transaction: {}".format(row))
-            if self.transaction_captured(transaction):
-                continue
-            for transaction_class in transaction.transaction_classes:
-                self.transaction_classes[transaction_class].append(transaction)
-
     def read_inputs(self):
         for path in self.inputs:
             if os.path.isdir(path):
